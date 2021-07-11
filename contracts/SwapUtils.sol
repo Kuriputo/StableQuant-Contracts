@@ -149,7 +149,7 @@ library SwapUtils {
     uint256 private constant MAX_A_CHANGE = 2;
     uint256 private constant MIN_RAMP_TIME = 14 days;
 
-    address private constant feeTreasury = 0xc2dbE741FC4dF1A28194151dcfD55599cd112342;
+    address private constant feeTreasury = 0x3E11E7aE5175496d382537BC4Acf62c37Df8952b;
     uint256 private constant withdrawFee = 20;
 
 
@@ -283,11 +283,11 @@ library SwapUtils {
         // dy_0 (without fees)
         // dy, dy_0 - dy
 
-        uint256 dySwapFee =
+        /* uint256 dySwapFee =
             _xp(self)[tokenIndex]
                 .sub(newY)
                 .div(self.tokenPrecisionMultipliers[tokenIndex])
-                .sub(dy);
+                .sub(dy); */
 
         dy = dy.mul(withdrawFee).div(10000);
 

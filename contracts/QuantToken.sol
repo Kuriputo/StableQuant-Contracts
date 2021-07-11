@@ -71,7 +71,7 @@ contract QuantToken is ERC20("Quant Token", "QUANT"), Ownable {
   function lock(address _account, uint256 _amount) public onlyOwner {
     require(_account != address(0), "no lock to address(0)");
     require(_amount <= balanceOf(_account), "no lock over balance");
-    require(endReleaseBlock > block.number, "Cannot lock after endReleaseBlock");
+    /* require(endReleaseBlock > block.number, "Cannot lock after endReleaseBlock"); */
 
     _transfer(_account, address(this), _amount);
 
@@ -117,6 +117,7 @@ contract QuantToken is ERC20("Quant Token", "QUANT"), Ownable {
 
   // @dev move QUANT with its locked funds to another account
   function transferAll(address _to) public {
+    require(_to != msg.sender, "_to cannot be sender.");
     _locks[_to] = _locks[_to].add(_locks[msg.sender]);
 
     if (_lastUnlockBlock[_to] < startReleaseBlock) {

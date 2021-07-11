@@ -27,7 +27,7 @@ contract Timelock {
     event QueueTransaction(bytes32 indexed txHash, address indexed target, uint value, string signature, bytes data, uint eta);
 
     uint public constant GRACE_PERIOD = 14 days;
-    uint public constant MINIMUM_DELAY = 10 minutes;
+    uint public constant MINIMUM_DELAY = 6 hours;
     uint public constant MAXIMUM_DELAY = 30 days;
 
     address public admin;
@@ -104,8 +104,8 @@ contract Timelock {
         require(msg.sender == admin, "Timelock::executeTransaction: Call must come from admin.");
 
         bytes32 txHash = keccak256(abi.encode(target, value, signature, data, eta));
-        require(queuedTransactions[txHash], "Timelock::executeTransaction: Transaction hasn't been queued.");
-        require(getBlockTimestamp() >= eta, "Timelock::executeTransaction: Transaction hasn't surpassed time lock.");
+        require(queuedTransactions[txHash], "Timelock::executeTransaction: Transaction hasnt been queued.");
+        require(getBlockTimestamp() >= eta, "Timelock::executeTransaction: Transaction hasnt surpassed time lock.");
         require(getBlockTimestamp() <= eta.add(GRACE_PERIOD), "Timelock::executeTransaction: Transaction is stale.");
 
         queuedTransactions[txHash] = false;

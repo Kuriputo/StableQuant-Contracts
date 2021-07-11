@@ -257,13 +257,13 @@ contract FairLaunch is IFairLaunch, Ownable {
   }
 
   // Deposit Staking tokens to FairLaunchToken for Quant allocation.
-  function deposit(address _for, uint256 _pid, uint256 _amount) public override {
+  function deposit(uint256 _pid, uint256 _amount) public override {
     PoolInfo storage pool = poolInfo[_pid];
-    UserInfo storage user = userInfo[_pid][_for];
+    UserInfo storage user = userInfo[_pid][msg.sender];
     if (user.fundedBy != address(0)) require(user.fundedBy == msg.sender, "bad sof");
     require(pool.stakeToken != address(0), "deposit: not accept deposit");
     updatePool(_pid);
-    if (user.amount > 0) _harvest(_for, _pid);
+    if (user.amount > 0) _harvest(msg.sender, _pid);
     if (user.fundedBy == address(0)) user.fundedBy = msg.sender;
     IERC20(pool.stakeToken).safeTransferFrom(address(msg.sender), address(this), _amount);
     user.amount = user.amount.add(_amount);
@@ -273,12 +273,12 @@ contract FairLaunch is IFairLaunch, Ownable {
   }
 
   // Withdraw Staking tokens from FairLaunchToken.
-  function withdraw(address _for, uint256 _pid, uint256 _amount) public override {
-    _withdraw(_for, _pid, _amount);
+  function withdraw(uint256 _pid, uint256 _amount) public override {
+    _withdraw(msg.sender, _pid, _amount);
   }
 
-  function withdrawAll(address _for, uint256 _pid) public override {
-    _withdraw(_for, _pid, userInfo[_pid][_for].amount);
+  function withdrawAll(uint256 _pid) public override {
+    _withdraw(msg.sender, _pid, userInfo[_pid][msg.sender].amount);
   }
 
   function _withdraw(address _for, uint256 _pid, uint256 _amount) internal {
